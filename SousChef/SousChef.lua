@@ -12,16 +12,19 @@ SousChef.Utility = {}
 SousChef.Media = {}
 SousChef.name 		= "SousChef"
 SousChef.author		= "Wobin, KatKat42, CrazyDutchGuy & Baertram"
-SousChef.version 	= "2.30"
+SousChef.version 	= "2.31"
 
 local SousChef = SousChef
 local u = SousChef.Utility
 
 --Libraries
 local LAM = LibAddonMenu2
-if LAM == nil and LibStub then LAM = LibStub:GetLibrary("LibAddonMenu-2.0") end
 SousChef.libSort = LibSort
-if SousChef.libSort == nil and LibStub then SousChef.libSort = LibStub:GetLibrary("LibSort", true) end
+
+if not LAM or not SousChef.libSort then
+	d("[SousChef]ERROR: Needed libraries are missing!")
+	return
+end
 
 local BACKPACK = ZO_PlayerInventoryBackpack
 local BANK = ZO_PlayerBankBackpack
