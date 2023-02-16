@@ -170,7 +170,7 @@ function SousChef.AddDetails(row)
 					end
 				end
 			end
-			ItemTooltip:AddLine(line)
+			ItemTooltip:AddLine(line, "ZoFontGameSmall")
 		end
 	end
 	return false
