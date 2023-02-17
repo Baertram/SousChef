@@ -426,6 +426,13 @@ local function SousChefCreateSettings()
 	})
 	table.insert(optionsMenu, {
 		type = "checkbox",
+		name = str.MENU_TOOLTIP_LIMIT,
+		tooltip = str.MENU_TOOLTIP_LIMIT_TOOLTIP,
+		getFunc = function() return SousChef.settings.recipeListLengthLimit ~= nil end,
+		setFunc = function(value) SousChef.settings.recipeListLengthLimit = value and 10 or nil end,
+	})
+	table.insert(optionsMenu, {
+		type = "checkbox",
 		name = str.MENU_RESULT_COUNTS,
 		tooltip = str.MENU_RESULT_COUNTS_TOOLTIP,
 		getFunc = function() return SousChef.settings.showCounts end,
