@@ -31,8 +31,20 @@ SousChef.Strings = {
 		MENU_TOOLTIP_HEADER = "Ingredient Tooltips",
 		MENU_TOOLTIP_CLICK = "Require Mouse Click to Show Sous Chef Data",
 		MENU_TOOLTIP_CLICK_TOOLTIP = "Only show Sous Chef information in ingredient tooltips after a mouse click, to save space",
+		MENU_TOOLTIP_SHOW_RECIPES_FOR_INGREDIENT = "Tooltip: Show recipes with ingredient",
+		MENU_TOOLTIP_SHOW_RECIPES_FOR_INGREDIENT_TOOLTIP = "Show the possible recipies using this ingredient, at an ingredients tooltip.",
 		MENU_TOOLTIP_LIMIT = "Limit the number of recipes shown",
-		MENU_TOOLTIP_LIMIT_TOOLTIP = "Limit the number of recipes show, to save space",
+		MENU_TOOLTIP_LIMIT_TOOLTIP = "Limit the number of recipes show, to save space.\nValue 0 means: Show all possible",
+		MENU_TOOLTIP_SKIP_GREEN_RECIPES_FOR_INGREDIENT = "Hide green recipes at tooltip",
+		MENU_TOOLTIP_SKIP_GREEN_RECIPES_FOR_INGREDIENT_TOOLTIP = "Hide recipes of green quality from the ingredient's tooltip",
+		MENU_TOOLTIP_SKIP_BLUE_RECIPES_FOR_INGREDIENT = "Hide blue recipes at tooltip",
+		MENU_TOOLTIP_SKIP_BLUE_RECIPES_FOR_INGREDIENT_TOOLTIP = "Hide recipes of blue quality from the ingredient's tooltip",
+		MENU_TOOLTIP_SKIP_PURPLE_RECIPES_FOR_INGREDIENT = "Hide purple recipes at tooltip",
+		MENU_TOOLTIP_SKIP_PURPLE_RECIPES_FOR_INGREDIENT_TOOLTIP = "Hide recipes of purple quality from the ingredient's tooltip",
+		MENU_TOOLTIP_SKIP_GOLDEN_RECIPES_FOR_INGREDIENT = "Hide golden recipes at tooltip",
+		MENU_TOOLTIP_SKIP_GOLDEN_RECIPES_FOR_INGREDIENT_TOOLTIP = "Hide recipes of golden quality from the ingredient's tooltip",
+
+
 		MENU_RESULT_COUNTS = "Show Recipe Result Counts",
 		MENU_RESULT_COUNTS_TOOLTIP = "Show how many of each recipe can be made in the Ingredient tooltip, next to the recipe's name",
 		MENU_ALT_USE = "Use Alts' Ingredient Knowledge",
@@ -149,6 +161,20 @@ SousChef.Strings = {
 
 		MENU_RELOAD = "Ben\195\182tigt das Neuladen der Benutzeroberfl\195\164che (/reloadui)",
 		
+		MENU_TOOLTIP_SHOW_RECIPES_FOR_INGREDIENT = "Tooltip: Zeige Rezepte mit dieser Zutat",
+		MENU_TOOLTIP_SHOW_RECIPES_FOR_INGREDIENT_TOOLTIP = "Zeige die möglichen Rezepte am Tooltip von einer Zutat an.",
+		MENU_TOOLTIP_LIMIT = "Anzahl Rezepte im Tooltip",
+		MENU_TOOLTIP_LIMIT_TOOLTIP = "Limitiere die Anzahl der angezeigten Rezepte im Tooltip auf diese Nummer.\n0 = Zeige alle",
+		MENU_TOOLTIP_SKIP_GREEN_RECIPES_FOR_INGREDIENT = "Hide green recipes at tooltip",
+		MENU_TOOLTIP_SKIP_GREEN_RECIPES_FOR_INGREDIENT_TOOLTIP = "Hide recipes of green quality from the ingredient's tooltip",
+		MENU_TOOLTIP_SKIP_BLUE_RECIPES_FOR_INGREDIENT = "Hide blue recipes at tooltip",
+		MENU_TOOLTIP_SKIP_BLUE_RECIPES_FOR_INGREDIENT_TOOLTIP = "Hide recipes of blue quality from the ingredient's tooltip",
+		MENU_TOOLTIP_SKIP_PURPLE_RECIPES_FOR_INGREDIENT = "Hide purple recipes at tooltip",
+		MENU_TOOLTIP_SKIP_PURPLE_RECIPES_FOR_INGREDIENT_TOOLTIP = "Hide recipes of purple quality from the ingredient's tooltip",
+		MENU_TOOLTIP_SKIP_GOLDEN_RECIPES_FOR_INGREDIENT = "Hide golden recipes at tooltip",
+		MENU_TOOLTIP_SKIP_GOLDEN_RECIPES_FOR_INGREDIENT_TOOLTIP = "Hide recipes of golden quality from the ingredient's tooltip",
+
+
 		-- keybinding label
 		KEY_MARK = "Rezept markieren",
 		

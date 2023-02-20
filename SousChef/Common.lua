@@ -29,6 +29,12 @@ local INVENTORIES = {
 	[LOOT_WINDOW.list]							= {GetLootItemLink, "lootId", nil},	  -- LootWindow
 	[STORE_WINDOW.list]							= {GetStoreItemLink, "slotIndex", nil},	-- Vendor
 }
+
+local greenRecipecolorPrefix = "|c00ff00"
+local blueRecipecolorPrefix = "|c0066ff"
+local purpleRecipecolorPrefix = "|c782ee6"
+local goldenRecipecolorPrefix = "|cE6B800"
+
 local rowClicked = {}
 
 function SousChef.HookInventory()
@@ -112,6 +118,8 @@ function SousChef.AddDetails(row)
 		or (MAIL_INBOX_FRAGMENT.state == "shown" and MAIL_INBOX.GetOpenMailId() and GetAttachedItemLink(MAIL_INBOX.GetOpenMailId(), bagId))
 	if itemLink == "" then return false end
 
+	local settings = SousChef.settings
+
 	-- item is a recipe
 	if GetItemLinkItemType(itemLink) == ITEMTYPE_RECIPE then
 		ZO_Tooltip_AddDivider(ItemTooltip)
@@ -122,8 +130,8 @@ function SousChef.AddDetails(row)
 		local level = GetLevelOrChampionPointsString(GetItemLinkRequiredLevel(resultLink), GetItemLinkRequiredChampionPoints(resultLink), 20)
 
 		ItemTooltip:AddLine(zo_strformat(str.TOOLTIP_CREATES, level, GetItemLinkName(resultLink)), "ZoFontWinH5", 1, 1, 1, BOTTOM)
-		if SousChef.settings.showAltKnowledge then
-			local knownBy = SousChef.settings.Cookbook[u.CleanString(GetItemLinkName(resultLink))]
+		if settings.showAltKnowledge then
+			local knownBy = settings.Cookbook[u.CleanString(GetItemLinkName(resultLink))]
 			if knownBy then
 				local numCharsKnowThisRecipe = 0
 				for i, val in pairs (knownBy) do
@@ -143,41 +151,76 @@ function SousChef.AddDetails(row)
 	end
 
 	--if we're only showing items on the shopping list, and we've already hidden this item, then don't touch it!
-	if SousChef.settings.onlyShowShopping and SousChef.slotLines[row:GetName()] and SousChef.slotLines[row:GetName()]:IsHidden() then return end
+	if settings.onlyShowShopping and SousChef.slotLines[row:GetName()] and SousChef.slotLines[row:GetName()]:IsHidden() then return end
 
 	--item is an ingredient
-	local itemId = u.GetItemID(itemLink) -- Get itemId of inventory or loot or store slot
-	local usableIngredient
-	if SousChef.settings.showAltIngredientKnowledge then
-		usableIngredient = SousChef.settings.ReverseCookbook[itemId]
-	else
-		usableIngredient = SousChef.ReverseCookbook[itemId]
-	end
-	if usableIngredient then
-		ZO_Tooltip_AddDivider(ItemTooltip)
-		ItemTooltip:AddLine(str.TOOLTIP_USED_IN, "ZoFontWinH5", 1,1,1, BOTTOM, MODIFY_TEXT_TYPE_UPPERCASE)
-		local lines
-		for i,v in ipairs(usableIngredient) do
-			if SousChef.settings.recipeListLengthLimit and i > SousChef.settings.recipeListLengthLimit then
-				lines = lines .. "\n..."
-				break
-			end
-			local line = zo_strformat("<<t:1>>", v)
-			if type(SousChef.settings.shoppingList[v]) == "table" and next(SousChef.settings.shoppingList[v]) then
-				line = "*(" .. u.TableKeyConcat(SousChef.settings.shoppingList[v])..") ".. line
-			end
-			if SousChef.settings.showCounts then
-				local bookmark = SousChef.CookbookIndex[v]
-				if bookmark then
-					local count = CalculateHowManyCouldBeCreated(bookmark.listIndex, bookmark.recipeIndex, bookmark.numIngredients)
-					if count > 0 then
-						line = line .." - (" .. count .. ")"
+	--Show the recipes using this ingredient at the tooltip?
+	if settings.showRecipesWithIngredientAtTooltip == true then
+		local recipeListLengthLimit = settings.recipeListLengthLimit
+		local shoppingList = settings.shoppingList
+
+		local itemId = u.GetItemID(itemLink) -- Get itemId of inventory or loot or store slot
+		local usableIngredient
+		if settings.showAltIngredientKnowledge then
+			usableIngredient = settings.ReverseCookbook[itemId]
+		else
+			usableIngredient = SousChef.ReverseCookbook[itemId]
+		end
+		if usableIngredient then
+			--Sort the recipe output by name (quality should be sorted too)
+			table.sort(usableIngredient)
+
+			local showCounts = settings.showCounts
+
+			local stripGreenRecipeQualityIngredientOutput = settings.stripGreenRecipeQualityIngredientOutput
+			local stripBlueRecipeQualityIngredientOutput = settings.stripBlueRecipeQualityIngredientOutput
+			local stripPurpleRecipeQualityIngredientOutput = settings.stripPurpleRecipeQualityIngredientOutput
+			local stripGoldenRecipeQualityIngredientOutput = settings.stripGoldenRecipeQualityIngredientOutput
+			local skipAllRecipes = (stripGreenRecipeQualityIngredientOutput == true and stripBlueRecipeQualityIngredientOutput == true and stripPurpleRecipeQualityIngredientOutput == true and stripGoldenRecipeQualityIngredientOutput == true and true) or false
+			if skipAllRecipes == true then return end
+
+			ZO_Tooltip_AddDivider(ItemTooltip)
+			local lines
+			local recipesAdded = 0
+			for i,v in ipairs(usableIngredient) do
+				--Skip any recipe by color prefix?
+				local skipRecipe = false
+				local colorStartOfRecipe = string.sub(v, 1, 8)
+				if (stripGreenRecipeQualityIngredientOutput == true and colorStartOfRecipe == greenRecipecolorPrefix)
+				or (stripBlueRecipeQualityIngredientOutput == true and colorStartOfRecipe == blueRecipecolorPrefix)
+				or (stripPurpleRecipeQualityIngredientOutput == true and colorStartOfRecipe == purpleRecipecolorPrefix)
+				or (stripGoldenRecipeQualityIngredientOutput == true and colorStartOfRecipe == goldenRecipecolorPrefix) then
+					--Skip this recipe
+					skipRecipe = true
+				end
+
+				if not skipRecipe then
+					if recipeListLengthLimit > 0 and recipesAdded > recipeListLengthLimit then
+						lines = lines .. "\n..."
+						break
 					end
+					local line = zo_strformat("<<t:1>>", v)
+					if type(shoppingList[v]) == "table" and next(shoppingList[v]) then
+						line = "*(" .. u.TableKeyConcat(shoppingList[v])..") ".. line
+					end
+					if showCounts then
+						local bookmark = SousChef.CookbookIndex[v]
+						if bookmark then
+							local count = CalculateHowManyCouldBeCreated(bookmark.listIndex, bookmark.recipeIndex, bookmark.numIngredients)
+							if count > 0 then
+								line = line .." - (" .. count .. ")"
+							end
+						end
+					end
+					lines = (lines ~= nil and (lines .. "\n") or "") .. line
+					recipesAdded = recipesAdded + 1
 				end
 			end
-			lines = (lines and (lines .. "\n") or "") .. line
+			if lines then
+				ItemTooltip:AddLine(str.TOOLTIP_USED_IN, "ZoFontWinH5", 1,1,1, BOTTOM, MODIFY_TEXT_TYPE_UPPERCASE)
+				ItemTooltip:AddLine(lines, "ZoFontGameSmall")
+			end
 		end
-		ItemTooltip:AddLine(lines, "ZoFontGameSmall")
 	end
 	return false
 end

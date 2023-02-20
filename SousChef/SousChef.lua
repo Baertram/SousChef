@@ -426,10 +426,51 @@ local function SousChefCreateSettings()
 	})
 	table.insert(optionsMenu, {
 		type = "checkbox",
+		name = str.MENU_TOOLTIP_SHOW_RECIPES_FOR_INGREDIENT,
+		tooltip = str.MENU_TOOLTIP_SHOW_RECIPES_FOR_INGREDIENT_TOOLTIP,
+		getFunc = function() return SousChef.settings.showRecipesWithIngredientAtTooltip end,
+		setFunc = function(value) SousChef.settings.showRecipesWithIngredientAtTooltip = value end,
+	})
+	table.insert(optionsMenu, {
+		type = "checkbox",
+		name = str.MENU_TOOLTIP_SKIP_GREEN_RECIPES_FOR_INGREDIENT,
+		tooltip = str.MENU_TOOLTIP_SKIP_GREEN_RECIPES_FOR_INGREDIENT_TOOLTIP,
+		getFunc = function() return SousChef.settings.stripGreenRecipeQualityIngredientOutput end,
+		setFunc = function(value) SousChef.settings.stripGreenRecipeQualityIngredientOutput = value end,
+	})
+	table.insert(optionsMenu, {
+		type = "checkbox",
+		name = str.MENU_TOOLTIP_SKIP_BLUE_RECIPES_FOR_INGREDIENT,
+		tooltip = str.MENU_TOOLTIP_SKIP_BLUE_RECIPES_FOR_INGREDIENT_TOOLTIP,
+		getFunc = function() return SousChef.settings.stripBlueRecipeQualityIngredientOutput end,
+		setFunc = function(value) SousChef.settings.stripBlueRecipeQualityIngredientOutput = value end,
+	})
+	table.insert(optionsMenu, {
+		type = "checkbox",
+		name = str.MENU_TOOLTIP_SKIP_PURPLE_RECIPES_FOR_INGREDIENT,
+		tooltip = str.MENU_TOOLTIP_SKIP_PURPLE_RECIPES_FOR_INGREDIENT_TOOLTIP,
+		getFunc = function() return SousChef.settings.stripPurpleRecipeQualityIngredientOutput end,
+		setFunc = function(value) SousChef.settings.stripPurpleRecipeQualityIngredientOutput = value end,
+	})
+	table.insert(optionsMenu, {
+		type = "checkbox",
+		name = str.MENU_TOOLTIP_SKIP_GOLDEN_RECIPES_FOR_INGREDIENT,
+		tooltip = str.MENU_TOOLTIP_SKIP_GOLDEN_RECIPES_FOR_INGREDIENT_TOOLTIP,
+		getFunc = function() return SousChef.settings.stripGoldenRecipeQualityIngredientOutput end,
+		setFunc = function(value) SousChef.settings.stripGoldenRecipeQualityIngredientOutput = value end,
+	})
+	table.insert(optionsMenu, {
+		type = "slider",
+		min=0,
+		max=99,
+		step = 1,
+		clampInput = true,
+		decimals = 0,
 		name = str.MENU_TOOLTIP_LIMIT,
 		tooltip = str.MENU_TOOLTIP_LIMIT_TOOLTIP,
-		getFunc = function() return SousChef.settings.recipeListLengthLimit ~= nil end,
-		setFunc = function(value) SousChef.settings.recipeListLengthLimit = value and 10 or nil end,
+		getFunc = function() return SousChef.settings.recipeListLengthLimit end,
+		setFunc = function(value) SousChef.settings.recipeListLengthLimit = value end,
+		disabled = function() return not SousChef.settings.showRecipesWithIngredientAtTooltip end
 	})
 	table.insert(optionsMenu, {
 		type = "checkbox",
@@ -592,6 +633,12 @@ local function SousChef_Loaded(eventCode, addOnName)
 		knownChars = { "(current)" },
 		autoJunk = false,
 		showAltShopping = true,
+		recipeListLengthLimit = 20,
+		showRecipesWithIngredientAtTooltip = true,
+		stripGreenRecipeQualityIngredientOutput = false,
+		stripBlueRecipeQualityIngredientOutput = false,
+		stripPurpleRecipeQualityIngredientOutput = false,
+		stripGoldenRecipeQualityIngredientOutput = false,
 	}
 
 	local localized = SousChef.Strings[SousChef.lang]
@@ -618,6 +665,13 @@ local function SousChef_Loaded(eventCode, addOnName)
 	end
 	if addCurrent then
 		table.insert(SousChef.settings.knownChars, "(current)")
+	end
+	--2023-02-20 2 new added recipe tooltip settigs
+	if SousChef.settings.recipeListLengthLimit == nil then
+		SousChef.settings.recipeListLengthLimit = defaults.recipeListLengthLimit
+	end
+	if SousChef.settings.showRecipesWithIngredientAtTooltip == nil then
+		SousChef.settings.showRecipesWithIngredientAtTooltip = defaults.showRecipesWithIngredientAtTooltip
 	end
 
 	-- define some slash commands
