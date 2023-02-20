@@ -156,7 +156,12 @@ function SousChef.AddDetails(row)
 	if usableIngredient then
 		ZO_Tooltip_AddDivider(ItemTooltip)
 		ItemTooltip:AddLine(str.TOOLTIP_USED_IN, "ZoFontWinH5", 1,1,1, BOTTOM, MODIFY_TEXT_TYPE_UPPERCASE)
+		local lines
 		for i,v in ipairs(usableIngredient) do
+			if SousChef.settings.recipeListLengthLimit and i > SousChef.settings.recipeListLengthLimit then
+				lines = lines .. "\n..."
+				break
+			end
 			local line = zo_strformat("<<t:1>>", v)
 			if type(SousChef.settings.shoppingList[v]) == "table" and next(SousChef.settings.shoppingList[v]) then
 				line = "*(" .. u.TableKeyConcat(SousChef.settings.shoppingList[v])..") ".. line
@@ -170,8 +175,9 @@ function SousChef.AddDetails(row)
 					end
 				end
 			end
-			ItemTooltip:AddLine(line)
+			lines = (lines and (lines .. "\n") or "") .. line
 		end
+		ItemTooltip:AddLine(lines, "ZoFontGameSmall")
 	end
 	return false
 end
